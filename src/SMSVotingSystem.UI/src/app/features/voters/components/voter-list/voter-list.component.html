@@ -1,0 +1,148 @@
+<!-- src/app/features/voters/components/voter-list/voter-list.component.html -->
+<div class="container-fluid">
+  <div class="row mb-4">
+    <div class="col">
+      <div class="d-flex justify-content-between align-items-center">
+        <h1>Voters</h1>
+        <button class="btn btn-primary" (click)="openAddModal()">
+          <i class="fas fa-plus me-2"></i> Add Voter
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-6 offset-md-6">
+      <div class="input-group">
+        <span class="input-group-text">
+          <i class="fas fa-search"></i>
+        </span>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search voters..."
+          [(ngModel)]="searchTerm"
+          (keyup)="applyFilter()"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header bg-light">
+      <h5 class="mb-0">Registered Voters</h5>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover mb-0">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Phone Number</th>
+              <th>Registration Date</th>
+              <th>Last Voted</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let voter of filteredVoters">
+              <td>{{ voter.id }}</td>
+              <td>{{ voter.name }}</td>
+              <td>{{ voter.phoneNumber }}</td>
+              <td>{{ formatDate(voter.registrationDate) }}</td>
+              <td>
+                {{ voter.lastVoted ? formatDate(voter.lastVoted) : "Never" }}
+              </td>
+              <td>
+                <span
+                  [ngClass]="
+                    voter.isRegistered ? 'badge bg-success' : 'badge bg-danger'
+                  "
+                >
+                  {{ voter.isRegistered ? "Active" : "Inactive" }}
+                </span>
+              </td>
+              <td>
+                <div class="btn-group btn-group-sm">
+                  <button
+                    class="btn btn-outline-primary"
+                    (click)="openEditModal(voter)"
+                  >
+                    <i class="bi bi-pen-fill"></i>
+                  </button>
+                  <button
+                    class="btn btn-outline-danger"
+                    (click)="openDeleteModal(voter)"
+                  >
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Empty state -->
+      <div *ngIf="filteredVoters.length === 0" class="text-center p-5">
+        <p class="text-muted mb-3">No voters found</p>
+        <button class="btn btn-primary" (click)="openAddModal()">
+          Add Voter
+        </button>
+      </div>
+    </div>
+    <div class="card-footer bg-light">
+      <div class="d-flex justify-content-between align-items-center">
+        <span
+          >Showing {{ filteredVoters.length }} of
+          {{ voters.length }} voters</span
+        >
+      </div>
+    </div>
+  </div>
+
+  <!-- Voter Modal -->
+  <div
+    class="modal fade"
+    id="voterModal"
+    tabindex="-1"
+    aria-labelledby="voterModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="voterModalLabel">
+            {{ selectedVoter ? "Edit Voter" : "Add Voter" }}
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <app-voter-form
+            [voter]="selectedVoter"
+            (save)="saveVoter($event)"
+            (cancel)="cancelVoterForm()"
+          >
+          </app-voter-form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <app-confirmation-dialog
+    title="Delete Voter"
+    message="Are you sure you want to delete this voter? This action cannot be undone."
+    confirmButtonText="Delete"
+    (confirm)="confirmDelete()"
+    (cancel)="cancelDelete()"
+  >
+  </app-confirmation-dialog>
+</div>

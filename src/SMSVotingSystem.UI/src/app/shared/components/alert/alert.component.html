@@ -1,0 +1,5 @@
+<!-- src/app/shared/components/alert/alert.component.html -->
+<div *ngIf="message" class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" aria-label="Close" (click)="close()"></button>
+  </div>

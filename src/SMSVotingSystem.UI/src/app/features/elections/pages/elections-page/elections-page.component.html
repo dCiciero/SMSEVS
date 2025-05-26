@@ -1,0 +1,177 @@
+<div class="container-fluid py-4">
+    <app-alert></app-alert>
+    
+    <div class="row mb-4">
+      <div class="col">
+        <div class="d-flex justify-content-between align-items-center">
+          <h1>Elections</h1>
+          <button class="btn btn-primary" (click)="openCreateModal()">
+            <i class="fas fa-plus me-2"></i> Create Election
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Active Election Card -->
+    <div class="card bg-light mb-4" *ngIf="activeElection">
+      <div class="card-body">
+        <h5 class="card-title">
+          <span class="badge bg-success me-2">ACTIVE</span>
+          {{ activeElection.title }}
+        </h5>
+        <div class="row">
+          <div class="col-md-6">
+            <p class="card-text">{{ activeElection.description }}</p>
+            <p class="text-muted mb-0">
+              <strong>Start:</strong> {{ formatDate(activeElection.startDate) }}<br>
+              <strong>End:</strong> {{ formatDate(activeElection.endDate) }}
+            </p>
+          </div>
+          <div class="col-md-6 d-flex justify-content-end align-items-center">
+            <div class="btn-group">
+              <a [routerLink]="['/results']" [queryParams]="{election: activeElection.id}" class="btn btn-outline-primary">
+                <i class="fas fa-chart-bar me-1"></i> View Results
+              </a>
+              <button class="btn btn-outline-danger" (click)="deactivateElection(activeElection.id)">
+                <i class="fas fa-stop-circle me-1"></i> End Election
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Tabs for Upcoming and Past Elections -->
+    <ul class="nav nav-tabs" id="electionsTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="upcoming-tab" data-bs-toggle="tab" data-bs-target="#upcoming" type="button" role="tab" aria-controls="upcoming" aria-selected="true">
+          Upcoming Elections
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="past-tab" data-bs-toggle="tab" data-bs-target="#past" type="button" role="tab" aria-controls="past" aria-selected="false">
+          Past Elections
+        </button>
+      </li>
+    </ul>
+    
+    <div class="tab-content" id="electionsTabContent">
+      <!-- Upcoming Elections Tab -->
+      <div class="tab-pane fade show active" id="upcoming" role="tabpanel" aria-labelledby="upcoming-tab">
+        <div class="card">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let election of upcomingElections">
+                    <td>{{ election.title }}</td>
+                    <td>{{ election.description }}</td>
+                    <td>{{ formatDate(election.startDate) }}</td>
+                    <td>{{ formatDate(election.endDate) }}</td>
+                    <td>
+                      <div class="btn-group btn-group-sm">
+                        <button class="btn btn-success" *ngIf="!activeElection" (click)="activateElection(election.id)">
+                          <i class="bi bi-play-circle"></i> 
+                          <!-- <i class="fas fa-play-circle me-1"></i> Activate -->
+                        </button>
+                        <button class="btn btn-outline-primary" (click)="openEditModal(election)">
+                          <i class="bi bi-pen-fill"></i>
+                          <!-- <i class="fa fa-edit"></i>Edit -->
+                        </button>
+                        <button class="btn btn-outline-danger" (click)="openDeleteModal(election)">
+                          <i class="bi bi-trash"></i> 
+                          <!-- <i class="fa fa-trash"></i> -->
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- Empty state -->
+            <div *ngIf="upcomingElections.length === 0" class="text-center py-4">
+              <p class="text-muted">No upcoming elections</p>
+              <button class="btn btn-primary" (click)="openCreateModal()">
+                Create New Election
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Past Elections Tab -->
+      <div class="tab-pane fade" id="past" role="tabpanel" aria-labelledby="past-tab">
+        <div class="card">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let election of pastElections">
+                    <td>{{ election.title }}</td>
+                    <td>{{ election.description }}</td>
+                    <td>{{ formatDate(election.startDate) }} - {{ formatDate(election.endDate) }}</td>
+                    <td>
+                      <a [routerLink]="['/results']" [queryParams]="{election: election.id}" class="btn btn-sm btn-outline-info">
+                        <i class="fas fa-chart-bar me-1"></i> Results
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- Empty state -->
+            <div *ngIf="pastElections.length === 0" class="text-center py-4">
+              <p class="text-muted">No past elections</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Election Modal -->
+    <div class="modal fade" id="electionModal" tabindex="-1" aria-labelledby="electionModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="electionModalLabel">{{ selectedElection ? 'Edit Election' : 'Create Election' }}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <app-election-form 
+              [election]="selectedElection" 
+              (save)="saveElection($event)" 
+              (cancel)="cancelElectionForm()">
+            </app-election-form>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Confirmation Modal -->
+    <app-confirmation-dialog
+      title="Delete Election"
+      message="Are you sure you want to delete this election? This action cannot be undone."
+      confirmButtonText="Delete"
+      (confirm)="confirmDelete()"
+      (cancel)="cancelDelete()">
+    </app-confirmation-dialog>
+  </div>

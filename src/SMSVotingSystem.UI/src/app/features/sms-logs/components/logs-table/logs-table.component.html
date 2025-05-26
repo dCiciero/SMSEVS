@@ -1,0 +1,407 @@
+<div class="logs-table-container">
+  <div class="table-responsive">
+    <table class="table table-hover logs-table">
+      <thead class="table-dark">
+        <tr>
+          <!-- Select All Checkbox -->
+           <th>
+            #
+           </th>
+          <th scope="col" class="text-center" style="width: 50px;">
+            <div class="form-check">
+              <input 
+                class="form-check-input" 
+                type="checkbox" 
+                [checked]="selectAll"
+                (change)="onSelectAllChange()">
+            </div>
+          </th>
+
+          <!-- Timestamp -->
+          <th scope="col" class="sortable" (click)="sort('timestamp')">
+            <div class="d-flex align-items-center">
+              <span>Timestamp</span>
+              <i class="ms-2" [ngClass]="getSortIcon('timestamp')"></i>
+            </div>
+          </th>
+
+          <!-- Direction -->
+          <th scope="col" class="text-center" style="width: 80px;">
+            Direction
+          </th>
+
+          <!-- Phone Number -->
+          <th scope="col" class="sortable" (click)="sort('phoneNumber')">
+            <div class="d-flex align-items-center">
+              <span>Phone Number</span>
+              <i class="ms-2" [ngClass]="getSortIcon('phoneNumber')"></i>
+            </div>
+          </th>
+
+          <!-- Message -->
+          <th scope="col" class="sortable" (click)="sort('message')">
+            <div class="d-flex align-items-center">
+              <span>Message</span>
+              <i class="ms-2" [ngClass]="getSortIcon('message')"></i>
+            </div>
+          </th>
+
+          <!-- Type -->
+          <!-- <th scope="col" class="sortable" (click)="sort('messageType')">
+            <div class="d-flex align-items-center">
+              <span>Type</span>
+              <i class="ms-2" [ngClass]="getSortIcon('messageType')"></i>
+            </div>
+          </th> -->
+
+          <!-- Status -->
+          <!-- <th scope="col" class="sortable text-center" (click)="sort('status')">
+            <div class="d-flex align-items-center justify-content-center">
+              <span>Status</span>
+              <i class="ms-2" [ngClass]="getSortIcon('status')"></i>
+            </div>
+          </th> -->
+
+          <!-- Provider -->
+          <!-- <th scope="col" class="sortable" (click)="sort('provider')">
+            <div class="d-flex align-items-center">
+              <span>Provider</span>
+              <i class="ms-2" [ngClass]="getSortIcon('provider')"></i>
+            </div>
+          </th> -->
+
+          <!-- Retry Count -->
+          <!-- <th scope="col" class="text-center" style="width: 80px;">
+            Retries
+          </th> -->
+
+          <!-- Cost -->
+          <!-- <th scope="col" class="text-end sortable" (click)="sort('cost')">
+            <div class="d-flex align-items-center justify-content-end">
+              <span>Cost</span>
+              <i class="ms-2" [ngClass]="getSortIcon('cost')"></i>
+            </div>
+          </th> -->
+
+          <!-- Delivery Time -->
+          <!-- <th scope="col" class="text-center" style="width: 100px;">
+            Delivery
+          </th> -->
+
+          <!-- Actions -->
+          <th scope="col" class="text-center" style="width: 100px;">
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let log of logs; let idx =index; trackBy: trackByLogId" [ngClass]="getRowClass(log)">
+            <!-- Log Number -->
+             <!-- index count -->
+              <td>{{idx + 1}}</td>
+          <!-- Select Checkbox -->
+          <td class="text-center">
+            <div class="form-check">
+              <input 
+                class="form-check-input" 
+                type="checkbox" 
+                [checked]="isLogSelected(log.id)"
+                (change)="onSelectLogChange(log.id)">
+            </div>
+          </td>
+
+          <!-- Timestamp -->
+          <td>
+            <div class="timestamp-cell">
+              <div class="fw-bold">{{ formatTimestamp(log.timestamp ) }}</div>
+              <small class="text-muted">{{ log.timestamp | date:'MM/dd/yyyy' }}</small>
+            </div>
+          </td>
+
+          <!-- Direction -->
+          <td class="text-center">
+            <div class="direction-indicator" [title]="getDirectionText(log.direction)">
+              <i [ngClass]="getDirectionIcon(log.direction)"></i>
+            </div>
+          </td>
+
+          <!-- Phone Number -->
+          <td>
+            <div class="phone-cell">
+              <div class="fw-bold">{{ formatPhoneNumber(log.phoneNumber) }}</div>
+              <small class="text-muted" *ngIf="log.phoneNumber">{{ log.phoneNumber }}</small>
+            </div>
+          </td>
+
+          <!-- Message -->
+          <td>
+            <div class="message-cell">
+              <div class="message-content" [title]="log.messageText">
+                {{ truncateMessage(log.messageText, 60) }}
+              </div>
+              <!-- <small class="text-muted" *ngIf="log.campaignName">
+                <i class="fas fa-tag me-1"></i>{{ log.campaignName }}
+              </small> -->
+            </div>
+          </td>
+
+          <!-- Message Type -->
+          <!-- <td>
+            <span class="badge bg-light text-dark type-badge">
+              {{ getMessageTypeDisplayName(log.messageType) }}
+            </span>
+          </td> -->
+
+          <!-- Status -->
+          <!-- <td class="text-center">
+            <span class="badge status-badge" [ngClass]="getStatusBadgeClass(log.status)">
+              {{ getStatusDisplayName(log.status) }}
+            </span>
+            <div *ngIf="log.errorMessage" class="mt-1">
+              <small class="text-danger" [title]="log.errorMessage">
+                <i class="fas fa-exclamation-triangle"></i>
+              </small>
+            </div>
+          </td> -->
+
+          <!-- Provider -->
+          <!-- <td>
+            <div class="provider-cell">
+              <span class="provider-name">{{ log.provider }}</span>
+              <div *ngIf="log.messageId">
+                <small class="text-muted">ID: {{ log.messageId }}</small>
+              </div>
+            </div>
+          </td> -->
+
+          <!-- Retry Count -->
+          <!-- <td class="text-center">
+            <span class="retry-count" [class.text-warning]="log.retryCount > 0">
+              {{ log.retryCount }}
+            </span>
+          </td> -->
+
+          <!-- Cost -->
+          <!-- <td class="text-end">
+            <span *ngIf="log.cost" class="cost-amount">
+              {{ formatCurrency(log.cost) }}
+            </span>
+            <span *ngIf="!log.cost" class="text-muted">-</span>
+          </td> -->
+
+          <!-- Delivery Time -->
+          <!-- <td class="text-center">
+            <span *ngIf="log.status === SmsStatus.DELIVERED" class="delivery-time">
+              {{ getDeliveryTime(log) }}
+            </span>
+            <span *ngIf="log.status !== SmsStatus.DELIVERED" class="text-muted">-</span>
+          </td> -->
+
+          <!-- Actions -->
+          <td class="text-center">
+            <div class="action-buttons">
+              <!-- <!- Retry Button --
+              <button 
+                *ngIf="canRetry(log.status)" 
+                class="btn btn-sm btn-outline-warning me-1"
+                (click)="onRetryLog(log.id)"
+                title="Retry SMS">
+                <i class="fas fa-redo"></i>
+              </button> -->
+
+              <!-- View Details Button -->
+              <button 
+                class="btn btn-sm btn-outline-primary"
+                title="View Details"
+                data-bs-toggle="modal"
+                [attr.data-bs-target]="'#logModal' + log.id">
+                <i class="bi bi-eye"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="logs.length === 0" class="empty-state text-center py-5">
+    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+    <h5 class="text-muted">No SMS logs to display</h5>
+    <p class="text-muted">No logs match the current filters or criteria.</p>
+  </div>
+
+  <!-- Log Detail Modals -->
+  <div *ngFor="let log of logs" 
+       class="modal fade" 
+       [id]="'logModal' + log.id" 
+       tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            <i class="fas fa-sms me-2"></i>
+            SMS Log Details
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-3">
+            <!-- Basic Information -->
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header">
+                  <h6 class="mb-0">Basic Information</h6>
+                </div>
+                <div class="card-body">
+                  <div class="row mb-2">
+                    <div class="col-4"><strong>ID:</strong></div>
+                    <div class="col-8"><code>{{ log.id }}</code></div>
+                  </div>
+                  <div class="row mb-2">
+                    <div class="col-4"><strong>Phone:</strong></div>
+                    <div class="col-8">{{ formatPhoneNumber(log.phoneNumber) }}</div>
+                  </div>
+                  <div class="row mb-2">
+                    <div class="col-4"><strong>Direction:</strong></div>
+                    <div class="col-8">
+                      <i [ngClass]="getDirectionIcon(log.direction)"></i>
+                      {{ getDirectionText(log.direction) }}
+                    </div>
+                  </div>
+                  <!-- <div class="row mb-2">
+                    <div class="col-4"><strong>Type:</strong></div>
+                    <div class="col-8">
+                      <span class="badge bg-light text-dark">
+                        {{ getMessageTypeDisplayName(log.messageType) }}
+                      </span>
+                    </div>
+                  </div> -->
+                  <!-- <div class="row mb-2">
+                    <div class="col-4"><strong>Status:</strong></div>
+                    <div class="col-8">
+                      <span class="badge" [ngClass]="getStatusBadgeClass(log.status)">
+                        {{ getStatusDisplayName(log.status) }}
+                      </span>
+                    </div>
+                  </div> -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Technical Details -->
+            <!-- <div class="col-md-6">
+              <div class="card">
+                <div class="card-header">
+                  <h6 class="mb-0">Technical Details</h6>
+                </div>
+                <div class="card-body">
+                  <div class="row mb-2">
+                    <div class="col-4"><strong>Provider:</strong></div>
+                    <div class="col-8">{{ log.provider }}</div>
+                  </div>
+                  <div class="row mb-2" *ngIf="log.messageId">
+                    <div class="col-4"><strong>Message ID:</strong></div>
+                    <div class="col-8"><code>{{ log.messageId }}</code></div>
+                  </div>
+                  <div class="row mb-2" *ngIf="log.sessionId">
+                    <div class="col-4"><strong>Session ID:</strong></div>
+                    <div class="col-8"><code>{{ log.sessionId }}</code></div>
+                  </div>
+                  <div class="row mb-2">
+                    <div class="col-4"><strong>Retries:</strong></div>
+                    <div class="col-8">{{ log.retryCount }}</div>
+                  </div>
+                  <div class="row mb-2" *ngIf="log.cost">
+                    <div class="col-4"><strong>Cost:</strong></div>
+                    <div class="col-8">{{ formatCurrency(log.cost) }}</div>
+                  </div>
+                </div>
+              </div>
+            </div> -->
+
+            <!-- Message Content -->
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <h6 class="mb-0">Message Content</h6>
+                </div>
+                <div class="card-body">
+                  <div class="message-content-full">
+                    {{ log.messageText }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Timestamps -->
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header">
+                  <h6 class="mb-0">Timestamps</h6>
+                </div>
+                <div class="card-body">
+                  <div class="row mb-2">
+                    <div class="col-4"><strong>Created:</strong></div>
+                    <div class="col-8">{{ log.timestamp | date:'full' }}</div>
+                  </div>
+                  <!-- <div class="row mb-2" *ngIf="log.deliveredAt">
+                    <div class="col-4"><strong>Delivered:</strong></div>
+                    <div class="col-8">{{ log.deliveredAt | date:'full' }}</div>
+                  </div>
+                  <div class="row mb-2" *ngIf="log.deliveredAt">
+                    <div class="col-4"><strong>Duration:</strong></div>
+                    <div class="col-8">{{ getDeliveryTime(log) }}</div>
+                  </div> -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Error Information -->
+            <!-- <div class="col-md-6" *ngIf="log.errorMessage">
+              <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                  <h6 class="mb-0">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Error Details
+                  </h6>
+                </div>
+                <div class="card-body">
+                  <div class="alert alert-danger mb-0">
+                    {{ log.errorMessage }}
+                  </div>
+                </div>
+              </div>
+            </div> -->
+
+            <!-- Metadata -->
+            <!-- <div class="col-12" *ngIf="log.metadata && Object.keys(log.metadata).length > 0">
+              <div class="card">
+                <div class="card-header">
+                  <h6 class="mb-0">Additional Metadata</h6>
+                </div>
+                <div class="card-body">
+                  <pre class="metadata-display">{{ log.metadata | json }}</pre>
+                </div>
+              </div>
+            </div> -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <!-- <button 
+            *ngIf="canRetry(log.status)" 
+            type="button" 
+            class="btn btn-warning"
+            (click)="onRetryLog(log.id)"
+            data-bs-dismiss="modal">
+            <i class="fas fa-redo me-2"></i>
+            Retry SMS
+          </button> -->
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

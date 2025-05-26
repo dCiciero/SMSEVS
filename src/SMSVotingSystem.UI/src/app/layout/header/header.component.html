@@ -1,0 +1,58 @@
+<!-- src/app/layout/header/header.component.html -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand" routerLink="/">SMS Voting System</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <ng-container>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/voters" routerLinkActive="active">Voters</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/candidates" routerLinkActive="active">Candidates</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/elections" routerLinkActive="active">Elections</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/results" routerLinkActive="active">Results</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/sms-logs" routerLinkActive="active">SMS Logs</a>
+            </li>
+          </ng-container>
+        </ul>
+        
+        <!-- <ul class="navbar-nav">
+          <ng-container *ngIf="isAuthenticated$ | async; else notAuthenticated">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                Welcome, {{ (currentUser$ | async)?.userName }}
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="#" (click)="logout(); $event.preventDefault()">Logout</a></li>
+              </ul>
+            </li>
+          </ng-container>
+          
+          <ng-template #notAuthenticated>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/auth/login">Login</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/auth/register">Register</a>
+            </li>
+          </ng-template>
+        </ul> -->
+      </div>
+    </div>
+  </nav>

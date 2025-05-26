@@ -1,0 +1,139 @@
+<div class="container-fluid py-4">
+    <app-alert></app-alert>
+    
+    <div class="row mb-4">
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 bg-primary text-white">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h6 class="card-subtitle mb-2">Registered Voters</h6>
+                <h2 class="card-title mb-0">{{ voterCount }}</h2>
+              </div>
+              <div>
+                <i class="fas fa-users fa-3x"></i>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer bg-transparent border-0">
+            <a routerLink="/voters" class="text-white text-decoration-none">View Voters <i class="fas fa-arrow-right ms-1"></i></a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 bg-success text-white">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h6 class="card-subtitle mb-2">Candidates</h6>
+                <h2 class="card-title mb-0">{{ candidateCount }}</h2>
+              </div>
+              <div>
+                <i class="fas fa-user-tie fa-3x"></i>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer bg-transparent border-0">
+            <a routerLink="/candidates" class="text-white text-decoration-none">View Candidates <i class="fas fa-arrow-right ms-1"></i></a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 bg-info text-white">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h6 class="card-subtitle mb-2">Election Status</h6>
+                <h2 class="card-title mb-0">{{ activeElection ? 'Active' : 'Inactive' }}</h2>
+              </div>
+              <div>
+                <i class="fas fa-vote-yea fa-3x"></i>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer bg-transparent border-0">
+            <a routerLink="/elections" class="text-white text-decoration-none">Manage Elections <i class="fas fa-arrow-right ms-1"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-lg-8 mb-4">
+        <div class="card h-100">
+          <div class="card-header bg-light">
+            <h5 class="mb-0">{{ activeElection ? activeElection.title + ' Results' : 'No Active Election' }}</h5>
+          </div>
+          <div class="card-body">
+            <div *ngIf="activeElection && voteResults.length > 0">
+              <!-- Instead of chart, use a simple table for now -->
+              <div class="mt-4">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Candidate</th>
+                      <th>Votes</th>
+                      <th>Percentage</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let result of voteResults">
+                      <td>{{ result.candidateName }} ({{ result.candidateShortCode }})</td>
+                      <td>{{ result.voteCount }}</td>
+                      <td>{{ result.percentage | number:'1.1-1' }}%</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            
+            <div *ngIf="activeElection && voteResults.length === 0" class="text-center py-5">
+              <p class="text-muted">No votes have been cast yet.</p>
+            </div>
+            
+            <div *ngIf="!activeElection" class="text-center py-5">
+              <p class="text-muted mb-4">There is no active election at this time.</p>
+              <a routerLink="/elections" class="btn btn-primary">Create Election</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-4 mb-4">
+        <div class="card h-100">
+          <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Recent SMS Activity</h5>
+            <a routerLink="/sms-logs" class="btn btn-sm btn-outline-primary">View All</a>
+          </div>
+          <div class="card-body p-0">
+            <div *ngIf="recentSmsLogs.length > 0">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item" *ngFor="let log of recentSmsLogs">
+                  <div class="d-flex">
+                    <div class="me-3">
+                      <span class="badge rounded-pill" [ngClass]="log.direction === 'Inbound' ? 'bg-info' : 'bg-success'">
+                        {{ log.direction }}
+                      </span>
+                    </div>
+                    <div class="d-flex flex-column flex-grow-1">
+                      <div class="d-flex justify-content-between">
+                        <small class="text-muted">{{ log.phoneNumber }}</small>
+                        <small class="text-muted">{{ log.timestamp | date:'short' }}</small>
+                      </div>
+                      <p class="mb-0 d-inline-block text-truncate" style="max-width: 250px;">{{ log.messageText }}</p>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            
+            <div *ngIf="recentSmsLogs.length === 0" class="text-center py-5">
+              <p class="text-muted">No SMS logs found.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

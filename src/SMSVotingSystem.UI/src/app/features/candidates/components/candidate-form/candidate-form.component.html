@@ -1,0 +1,131 @@
+<form (ngSubmit)="submit()" [formGroup]="candidateForm" class="border p-3 rounded bg-light">
+    <div class="mb-3">
+      <label class="form-label">Name</label>
+      <input type="text" class="form-control" formControlName="name" required>
+      <div *ngIf="candidateForm.get('name')?.invalid && candidateForm.get('name')?.touched" class="text-danger">
+        <small *ngIf="candidateForm.get('name')?.errors?.['required']">Name is required</small>
+        <small *ngIf="candidateForm.get('name')?.errors?.['maxlength']">Name cannot be longer than 100 characters</small>
+        <small *ngIf="candidateForm.get('name')?.errors?.['pattern']">Name can only contain letters and spaces</small>
+      </div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Party</label>
+      <input type="text" class="form-control" formControlName="party" name="party" required>
+      <div *ngIf="candidateForm.get('party')?.invalid && candidateForm.get('party')?.touched" class="text-danger">
+        <small *ngIf="candidateForm.get('party')?.errors?.['required']">Party is required</small>
+        <small *ngIf="candidateForm.get('party')?.errors?.['maxlength']">Party cannot be longer than 100 characters</small>
+        <!-- <small *ngIf="candidateForm.get('party')?.errors?.['pattern']">Party can only contain letters and spaces</small> -->
+      </div>
+    </div>
+    
+    <div class="mb-3">
+      <label class="form-label">Email</label>
+      <input type="email" class="form-control" formControlName="email" required>
+      <div *ngIf="candidateForm.get('email')?.invalid && candidateForm.get('email')?.touched" class="text-danger">
+        <small *ngIf="candidateForm.get('email')?.errors?.['required']">Email is required</small>
+        <small *ngIf="candidateForm.get('email')?.errors?.['email']">Invalid email format</small>
+        <small *ngIf="candidateForm.get('email')?.errors?.['maxlength']">Email cannot be longer than 100 characters</small>
+        <small *ngIf="candidateForm.get('email')?.errors?.['pattern']">Email can only contain letters, numbers, and special characters</small>
+      </div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Phone Number</label>
+      <input type="text" class="form-control" formControlName="phoneNumber" required>
+      <div *ngIf="candidateForm.get('phoneNumber')?.invalid && candidateForm.get('phoneNumber')?.touched" class="text-danger">
+        <small *ngIf="candidateForm.get('phoneNumber')?.errors?.['required']">Phone number is required</small>
+        <small *ngIf="candidateForm.get('phoneNumber')?.errors?.['pattern']">Invalid phone number format</small>
+        <small *ngIf="candidateForm.get('phoneNumber')?.errors?.['maxlength']">Phone number cannot be longer than 15 characters</small>
+        <small *ngIf="candidateForm.get('phoneNumber')?.errors?.['minlength']">Phone number must be at least 10 characters</small>
+      </div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Address</label>
+      <input type="text" class="form-control" formControlName="address" required>
+      <div *ngIf="candidateForm.get('address')?.invalid && candidateForm.get('address')?.touched" class="text-danger">
+        <small *ngIf="candidateForm.get('address')?.errors?.['required']">Address is required</small>
+        <small *ngIf="candidateForm.get('address')?.errors?.['maxlength']">Address cannot be longer than 200 characters</small>
+        <!-- <small *ngIf="candidateForm.get('address')?.errors?.['pattern']">Address can only contain letters and spaces</small> -->
+      </div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Date of Birth</label>
+      <input type="date" class="form-control" formControlName="dateOfBirth" required>
+      <div *ngIf="candidateForm.get('dateOfBirth')?.invalid && candidateForm.get('dateOfBirth')?.touched" class="text-danger">
+        <small *ngIf="candidateForm.get('dateOfBirth')?.errors?.['required']">Date of birth is required</small>
+        <small *ngIf="candidateForm.get('dateOfBirth')?.errors?.['pattern']">Invalid date format</small>
+        <small *ngIf="candidateForm.get('dateOfBirth')?.errors?.['underage']">Date of birth must be at least 21 years ago</small>
+        <small *ngIf="candidateForm.get('dateOfBirth')?.errors?.['futureDate']">Date of birth cannot be in the future</small>
+
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="election">Election</label>
+      <input 
+        type="text" 
+        class="form-control" 
+        [value]="election?.title" 
+        formControlName="electionId" 
+        [disabled]="true"
+        [readOnly]="true"
+        required>
+      <div *ngIf="candidateForm.get('electionId')?.invalid && candidateForm.get('electionId')?.touched" class="text-danger">
+        <small *ngIf="candidateForm.get('electionId')?.errors?.['required']">Election is required</small>
+        <small *ngIf="candidateForm.get('electionId')?.errors?.['maxlength']">Election cannot be longer than 100 characters</small>
+        <!-- <small *ngIf="candidateForm.get('electionId')?.errors?.['pattern']">Election can only contain letters and spaces</small> -->
+      </div>
+    </div>
+    <!-- <div class="mb-3">
+      <label class="form-label" for="election">Election</label>
+      <select class="form-select" formControlName="electionId" id="election" required>
+        <option value="" disabled selected>Select an election</option>
+        <option *ngFor="let election of elections" [value]="election.id">
+          {{ election.title }}
+        </option>
+      </select>
+    </div> -->
+        
+    <div class="form-check mb-3">
+      <input type="checkbox" class="form-check-input" formControlName="isActive" name="active" id="active">
+      <label class="form-check-label" for="active">Active</label>
+    </div>
+    <button type="submit" class="btn btn-success" >
+      {{ isEditMode ? 'Update' : 'Create' }}
+    </button>
+  </form>
+<!-- <div class="modal-header">
+  <h5 class="modal-title">{{ isEditMode ? 'Edit Candidate' : 'Add Candidate' }}</h5>
+  <button type="button" class="btn-close" aria-label="Close" (click)="close()"></button>
+</div>
+<div class="modal-body">
+  <form (ngSubmit)="submit()" #candidateForm="ngForm">
+    <div class="mb-3">
+      <label class="form-label">Name</label>
+      <input type="text" class="form-control" [(ngModel)]="candidate.name" name="name" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Party</label>
+      <input type="text" class="form-control" [(ngModel)]="candidate.party" name="party" required>
+    </div>
+    <div class="form-check mb-3">
+      <input type="checkbox" class="form-check-input" [(ngModel)]="candidate.active" name="active" id="active">
+      <label class="form-check-label" for="active">Active</label>
+    </div>
+    <button type="submit" class="btn btn-success" [disabled]="candidateForm.invalid">
+      {{ isEditMode ? 'Update' : 'Create' }}
+    </button>
+  </form>
+</div> -->
+
+
+<!-- <form (ngSubmit)="onSubmit(candidateForm)" #candidateForm="ngForm" class="border p-3 rounded bg-light">
+  <div class="mb-3">
+    <label for="name" class="form-label">Name</label>
+    <input type="text" id="name" class="form-control" required [(ngModel)]="candidate.name" name="name">
+  </div>
+  <div class="mb-3">
+    <label for="party" class="form-label">Party</label>
+    <input type="text" id="party" class="form-control" required [(ngModel)]="candidate.party" name="party">
+  </div>
+  <button type="submit" class="btn btn-primary w-100">Add Candidate</button>
+</form> -->
